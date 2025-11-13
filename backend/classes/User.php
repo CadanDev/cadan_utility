@@ -81,7 +81,7 @@ class User {
         try {
             $query = "SELECT id, name, username, email, password 
                      FROM " . $this->table . " 
-                     WHERE username = :login OR email = :login
+                     WHERE username = :username OR email = :email
                      LIMIT 1";
 
             Logger::debug("Executando query de login", [
@@ -98,7 +98,8 @@ class User {
                 return array('success' => false, 'message' => 'Erro interno do servidor');
             }
             
-            $stmt->bindParam(':login', $this->username);
+            $stmt->bindParam(':username', $this->username);
+            $stmt->bindParam(':email', $this->username);
             $executeResult = $stmt->execute();
             
             if (!$executeResult) {
