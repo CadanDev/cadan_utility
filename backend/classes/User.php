@@ -57,11 +57,11 @@ class User {
     public function login() {
         $query = "SELECT id, name, username, email, password 
                  FROM " . $this->table . " 
-                 WHERE username = :username OR email = :username
+                 WHERE username = :login OR email = :login
                  LIMIT 1";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':username', $this->username);
+        $stmt->bindParam(':login', $this->username);
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
