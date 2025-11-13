@@ -1,0 +1,33 @@
+# Arquivos de ambiente - NUNCA commitar!
+.env
+
+# Logs
+*.log
+logs/
+
+# Cache
+cache/
+tmp/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependências (se usar Composer no futuro)
+vendor/
+composer.lock
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
+
+# Arquivos temporários
+*.tmp
+*.temp

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Sistema de Lembretes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow mt-5">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">
+                            <i class="bi bi-person-plus"></i> Cadastro
+                        </h3>
+                        
+                        <!-- Formulário de Cadastro -->
+                        <form id="registerForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required minlength="3">
+                                <div class="form-text">Mínimo 3 caracteres</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Senha</label>
+                                <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                                <div class="form-text">Mínimo 6 caracteres</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar Senha</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Cadastrar</button>
+                        </form>
+
+                        <!-- Link para login -->
+                        <div class="text-center mt-3">
+                            <p>Já tem conta? <a href="login.html">Faça login aqui</a></p>
+                        </div>
+
+                        <!-- Área de mensagens -->
+                        <div id="message" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validar senhas
+            if (data.password !== data.confirmPassword) {
+                showMessage('As senhas não conferem!', 'danger');
+                return;
+            }
+            
+            // Remover confirmPassword antes de enviar
+            delete data.confirmPassword;
+            
+            try {
+                const response = await fetch('backend/api/register.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Cadastro realizado com sucesso!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    if (result.errors) {
+                        showMessage(result.errors.join('<br>'), 'danger');
+                    } else {
+                        showMessage(result.message, 'danger');
+                    }
+                }
+            } catch (error) {
+                showMessage('Erro ao conectar com o servidor', 'danger');
+            }
+        });
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="alert alert-${type}" role="alert">${message}</div>`;
+        }
+    </script>
+</body>
+</html>

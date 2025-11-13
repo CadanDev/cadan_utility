@@ -1,0 +1,13 @@
+{
+  "name": "lembretes-app",
+  "version": "1.0.0",
+  "description": "Aplicativo de lembretes com calendário e timer",
+  "scripts": {
+    "build-css": "sass css/styles.scss css/styles.css --style compressed",
+    "watch-css": "sass css/styles.scss css/styles.css --style compressed --watch",
+    "dev": "sass css/styles.scss css/styles.css --style compressed --watch"
+  },
+  "devDependencies": {
+    "sass": "^1.69.5"
+  }
+}
