@@ -1,6 +1,13 @@
 <?php
-require_once '../config/database.php';
-require_once '../config/config.php';
+// Determinar caminhos baseado na localização atual
+$baseDir = dirname(__DIR__);
+if (file_exists($baseDir . '/config/database.php')) {
+    require_once $baseDir . '/config/database.php';
+    require_once $baseDir . '/config/config.php';
+} else {
+    require_once 'config/database.php';
+    require_once 'config/config.php';
+}
 
 class User {
     private $conn;
@@ -74,12 +81,12 @@ class User {
         try {
             $query = "SELECT id, name, username, email, password 
                      FROM " . $this->table . " 
-                     WHERE username = :username OR email = :username
+                     WHERE username = :login OR email = :login
                      LIMIT 1";
 
             Logger::debug("Executando query de login", [
                 'query' => $query,
-                'username_param' => $this->username
+                'login_param' => $this->username
             ]);
 
             $stmt = $this->conn->prepare($query);
@@ -91,7 +98,7 @@ class User {
                 return array('success' => false, 'message' => 'Erro interno do servidor');
             }
             
-            $stmt->bindParam(':username', $this->username);
+            $stmt->bindParam(':login', $this->username);
             $executeResult = $stmt->execute();
             
             if (!$executeResult) {
