@@ -55,35 +55,112 @@ class User {
 
     // Login do usuário
     public function login() {
-        $query = "SELECT id, name, username, email, password 
-                 FROM " . $this->table . " 
-                 WHERE username = :username OR email = :username
-                 LIMIT 1";
+        require_once 'Logger.php';
+        
+        Logger::info("Tentativa de login", [
+            'username_provided' => $this->username,
+            'password_length' => strlen($this->password)
+        ]);
+        
+        // Validações básicas
+        if (empty($this->username) || empty($this->password)) {
+            Logger::warning("Login com dados vazios", [
+                'username_empty' => empty($this->username),
+                'password_empty' => empty($this->password)
+            ]);
+            return array('success' => false, 'message' => 'Username e senha são obrigatórios');
+        }
+        
+        try {
+            $query = "SELECT id, name, username, email, password 
+                     FROM " . $this->table . " 
+                     WHERE username = :username OR email = :username
+                     LIMIT 1";
 
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->execute();
+            Logger::debug("Executando query de login", [
+                'query' => $query,
+                'username_param' => $this->username
+            ]);
 
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch();
+            $stmt = $this->conn->prepare($query);
             
-            if (password_verify($this->password, $row['password'])) {
-                $this->id = $row['id'];
-                $this->name = $row['name'];
-                $this->username = $row['username'];
-                $this->email = $row['email'];
-                
-                return array(
-                    'success' => true, 
-                    'message' => 'Login realizado com sucesso',
-                    'user' => array(
-                        'id' => $this->id,
-                        'name' => $this->name,
-                        'username' => $this->username,
-                        'email' => $this->email
-                    )
-                );
+            if (!$stmt) {
+                Logger::error("Erro ao preparar statement", [
+                    'error' => $this->conn->errorInfo()
+                ]);
+                return array('success' => false, 'message' => 'Erro interno do servidor');
             }
+            
+            $stmt->bindParam(':username', $this->username);
+            $executeResult = $stmt->execute();
+            
+            if (!$executeResult) {
+                Logger::error("Erro ao executar query", [
+                    'error' => $stmt->errorInfo(),
+                    'username' => $this->username
+                ]);
+                return array('success' => false, 'message' => 'Erro interno do servidor');
+            }
+            
+            Logger::debug("Query executada com sucesso", [
+                'rows_found' => $stmt->rowCount()
+            ]);
+
+            if ($stmt->rowCount() > 0) {
+                $row = $stmt->fetch();
+                
+                Logger::debug("Usuário encontrado", [
+                    'user_id' => $row['id'],
+                    'username_db' => $row['username'],
+                    'email_db' => $row['email']
+                ]);
+                
+                if (password_verify($this->password, $row['password'])) {
+                    $this->id = $row['id'];
+                    $this->name = $row['name'];
+                    $this->username = $row['username'];
+                    $this->email = $row['email'];
+                    
+                    Logger::info("Login realizado com sucesso", [
+                        'user_id' => $this->id,
+                        'username' => $this->username
+                    ]);
+                    
+                    return array(
+                        'success' => true, 
+                        'message' => 'Login realizado com sucesso',
+                        'user' => array(
+                            'id' => $this->id,
+                            'name' => $this->name,
+                            'username' => $this->username,
+                            'email' => $this->email
+                        )
+                    );
+                } else {
+                    Logger::warning("Senha incorreta", [
+                        'username' => $this->username,
+                        'user_id' => $row['id']
+                    ]);
+                }
+            } else {
+                Logger::warning("Usuário não encontrado", [
+                    'username_searched' => $this->username
+                ]);
+            }
+
+        } catch (PDOException $e) {
+            Logger::error("Erro PDO no login", [
+                'error_message' => $e->getMessage(),
+                'error_code' => $e->getCode(),
+                'username' => $this->username
+            ]);
+            return array('success' => false, 'message' => 'Erro interno do servidor');
+        } catch (Exception $e) {
+            Logger::error("Erro geral no login", [
+                'error_message' => $e->getMessage(),
+                'username' => $this->username
+            ]);
+            return array('success' => false, 'message' => 'Erro interno do servidor');
         }
 
         return array('success' => false, 'message' => 'Credenciais inválidas');

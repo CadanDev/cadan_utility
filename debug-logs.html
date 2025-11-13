@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Monitoramento de Logs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #00ff00;
+            color: #1a1a1a;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-panel {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .logs-container {
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            height: 500px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            background-color: #111;
+        }
+
+        .log-entry.debug { border-left-color: #888; color: #888; }
+        .log-entry.info { border-left-color: #00ff00; color: #00ff00; }
+        .log-entry.warning { border-left-color: #ffaa00; color: #ffaa00; }
+        .log-entry.error { border-left-color: #ff4444; color: #ff4444; }
+        .log-entry.critical { 
+            border-left-color: #ff0000; 
+            color: #ff0000; 
+            background-color: #330000;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .log-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .log-context {
+            background-color: #1a1a1a;
+            padding: 5px;
+            border-radius: 3px;
+            margin-top: 5px;
+            white-space: pre-wrap;
+            font-size: 11px;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        select {
+            padding: 8px;
+            background-color: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #ffaa00;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Sistema de Monitoramento de Logs</h1>
+        
+        <div class="controls">
+            <button onclick="loadLogs()">🔄 Atualizar Logs</button>
+            <button onclick="testLogs()">🧪 Criar Logs de Teste</button>
+            <button onclick="clearLogs()">🗑️ Limpar Logs</button>
+            <button onclick="checkStatus()">📊 Status do Sistema</button>
+            
+            <div class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                <label for="autoRefresh">Auto-refresh</label>
+                
+                <select id="refreshInterval" onchange="updateRefreshInterval()">
+                    <option value="5000">5s</option>
+                    <option value="10000" selected>10s</option>
+                    <option value="30000">30s</option>
+                    <option value="60000">1min</option>
+                </select>
+                
+                <select id="logLines" onchange="loadLogs()">
+                    <option value="25">25 linhas</option>
+                    <option value="50" selected>50 linhas</option>
+                    <option value="100">100 linhas</option>
+                    <option value="200">200 linhas</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="status-panel" id="statusPanel" style="display: none;">
+            <h3>📊 Status do Sistema</h3>
+            <div id="statusContent"></div>
+        </div>
+
+        <div class="logs-container" id="logsContainer">
+            <div class="loading">Carregando logs...</div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+
+        // Carregar logs
+        async function loadLogs() {
+            const lines = document.getElementById('logLines').value;
+            const container = document.getElementById('logsContainer');
+            
+            try {
+                const response = await fetch(`backend/api/debug.php?action=logs&format=json&lines=${lines}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayLogs(data.logs);
+                } else {
+                    container.innerHTML = `<div class="log-entry error">❌ Erro ao carregar logs: ${data.message}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="log-entry error">❌ Erro de conexão: ${error.message}</div>`;
+            }
+        }
+
+        // Exibir logs
+        function displayLogs(logs) {
+            const container = document.getElementById('logsContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="log-entry info">📝 Nenhum log encontrado</div>';
+                return;
+            }
+
+            let html = '';
+            logs.forEach(log => {
+                const levelClass = log.level.toLowerCase();
+                const icon = getLevelIcon(log.level);
+                
+                html += `
+                    <div class="log-entry ${levelClass}">
+                        <div class="log-header">
+                            ${icon} [${log.timestamp}] [${log.level}] ${log.method} ${log.uri}
+                        </div>
+                        <div><strong>Mensagem:</strong> ${log.message}</div>
+                        <div><strong>IP:</strong> ${log.ip} | <strong>Memória:</strong> ${formatBytes(log.memory_usage)}</div>
+                        ${log.context && Object.keys(log.context).length > 0 ? 
+                            `<div class="log-context"><strong>Contexto:</strong>\n${JSON.stringify(log.context, null, 2)}</div>` : 
+                            ''
+                        }
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.scrollTop = 0; // Scroll para o topo (logs mais recentes)
+        }
+
+        // Ícones por nível
+        function getLevelIcon(level) {
+            const icons = {
+                'DEBUG': '🔍',
+                'INFO': 'ℹ️',
+                'WARNING': '⚠️',
+                'ERROR': '❌',
+                'CRITICAL': '🚨'
+            };
+            return icons[level] || '📝';
+        }
+
+        // Formatar bytes
+        function formatBytes(bytes) {
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let i = 0;
+            while (bytes >= 1024 && i < units.length - 1) {
+                bytes /= 1024;
+                i++;
+            }
+            return bytes.toFixed(2) + ' ' + units[i];
+        }
+
+        // Testar logs
+        async function testLogs() {
+            try {
+                const response = await fetch('backend/api/debug.php?action=test');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ Logs de teste criados com sucesso!');
+                    setTimeout(() => loadLogs(), 1000); // Recarregar após 1 segundo
+                } else {
+                    alert('❌ Erro ao criar logs de teste: ' + data.message);
+                }
+            } catch (error) {
+                alert('❌ Erro de conexão: ' + error.message);
+            }
+        }
+
+        // Limpar logs
+        async function clearLogs() {
+            if (!confirm('⚠️ Tem certeza que deseja limpar todos os logs?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('backend/api/debug.php?action=clear');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ Logs limpos com sucesso!');
+                    loadLogs();
+                } else {
+                    alert('❌ Erro ao limpar logs: ' + data.message);
+                }
+            } catch (error) {
+                alert('❌ Erro de conexão: ' + error.message);
+            }
+        }
+
+        // Verificar status
+        async function checkStatus() {
+            const panel = document.getElementById('statusPanel');
+            const content = document.getElementById('statusContent');
+            
+            try {
+                const response = await fetch('backend/api/debug.php?action=status');
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = '';
+                    for (const [key, value] of Object.entries(data.status)) {
+                        const status = value ? '✅' : '❌';
+                        html += `<div class="status-item"><span>${key}:</span><span>${status} ${value}</span></div>`;
+                    }
+                    content.innerHTML = html;
+                    panel.style.display = 'block';
+                } else {
+                    content.innerHTML = `<div class="status-item error">❌ ${data.message}</div>`;
+                    panel.style.display = 'block';
+                }
+            } catch (error) {
+                content.innerHTML = `<div class="status-item error">❌ Erro de conexão: ${error.message}</div>`;
+                panel.style.display = 'block';
+            }
+        }
+
+        // Toggle auto refresh
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            
+            if (checkbox.checked) {
+                const interval = parseInt(document.getElementById('refreshInterval').value);
+                autoRefreshInterval = setInterval(loadLogs, interval);
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+            }
+        }
+
+        // Atualizar intervalo de refresh
+        function updateRefreshInterval() {
+            const checkbox = document.getElementById('autoRefresh');
+            if (checkbox.checked) {
+                // Reiniciar o auto refresh com novo intervalo
+                toggleAutoRefresh(); // Para
+                toggleAutoRefresh(); // Inicia com novo intervalo
+            }
+        }
+
+        // Carregar logs iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLogs();
+        });
+    </script>
+</body>
+</html>
