@@ -12,7 +12,11 @@ function start20MinTimer() {
 		duration: 20 * 60 * 1000,
 		type: '20min'
 	};
-	localStorage.setItem('eyeRestTimer', JSON.stringify(timerData));
+	if (typeof offlineStorage !== 'undefined') {
+		offlineStorage.saveTimerState(timerData);
+	} else {
+		localStorage.setItem('eyeRestTimer', JSON.stringify(timerData));
+	}
 
 	const progressBar = document.getElementById('progressBar');
 	progressBar.classList.remove('bg-success');
@@ -20,7 +24,11 @@ function start20MinTimer() {
 	updateProgress(20 * 60 * 1000, progressBar, startTime);
 
 	timer20min = setTimeout(() => {
-		localStorage.removeItem('eyeRestTimer');
+		if (typeof offlineStorage !== 'undefined') {
+			offlineStorage.saveTimerState(null);
+		} else {
+			localStorage.removeItem('eyeRestTimer');
+		}
 		playSound();
 		sendNotification("👁️ Hora de olhar longe!", "⏰ Olhe para longe por 20 segundos para descansar os olhos.", {
 			requireInteraction: true,
@@ -45,7 +53,11 @@ function start20SecTimer() {
 		duration: 20000,
 		type: '20sec'
 	};
-	localStorage.setItem('eyeRestTimer', JSON.stringify(timerData));
+	if (typeof offlineStorage !== 'undefined') {
+		offlineStorage.saveTimerState(timerData);
+	} else {
+		localStorage.setItem('eyeRestTimer', JSON.stringify(timerData));
+	}
 
 	document.getElementById('start20secBtn').style.display = 'none';
 	document.getElementById('status').innerHTML = '<i class="bi bi-eye-fill text-success me-2"></i>Olhe longe por 20 segundos!';
@@ -74,20 +86,30 @@ function start20SecTimer() {
  * Restaura o estado do timer a partir do localStorage
  */
 function restoreTimerState() {
-	const timerData = localStorage.getItem('eyeRestTimer');
+	let timerData;
+	if (typeof offlineStorage !== 'undefined') {
+		timerData = offlineStorage.loadTimerState();
+	} else {
+		const data = localStorage.getItem('eyeRestTimer');
+		timerData = data ? JSON.parse(data) : null;
+	}
 	if (!timerData) {
 		start20MinTimer();
 		return;
 	}
 
-	const timer = JSON.parse(timerData);
+	const timer = typeof timerData === 'string' ? JSON.parse(timerData) : timerData;
 	const now = Date.now();
 	const elapsed = now - timer.startTime;
 	const remaining = timer.duration - elapsed;
 
 	if (remaining <= 0) {
 		// Timer já deveria ter terminado
-		localStorage.removeItem('eyeRestTimer');
+		if (typeof offlineStorage !== 'undefined') {
+			offlineStorage.saveTimerState(null);
+		} else {
+			localStorage.removeItem('eyeRestTimer');
+		}
 		if (timer.type === '20min') {
 			// Deveria mostrar o botão de 20 segundos
 			document.getElementById('start20secBtn').style.display = 'inline-block';
@@ -115,7 +137,11 @@ function restoreTimerState() {
 			updateProgress(timer.duration, progressBar, timer.startTime);
 
 			timer20min = setTimeout(() => {
-				localStorage.removeItem('eyeRestTimer');
+				if (typeof offlineStorage !== 'undefined') {
+					offlineStorage.saveTimerState(null);
+				} else {
+					localStorage.removeItem('eyeRestTimer');
+				}
 				playSound();
 				sendNotification("👁️ Hora de olhar longe!", "⏰ Olhe para longe por 20 segundos para descansar os olhos.", {
 					requireInteraction: true,
@@ -137,7 +163,11 @@ function restoreTimerState() {
 			updateProgress(timer.duration, progressBar, timer.startTime);
 
 			timer20sec = setTimeout(() => {
-				localStorage.removeItem('eyeRestTimer');
+				if (typeof offlineStorage !== 'undefined') {
+					offlineStorage.saveTimerState(null);
+				} else {
+					localStorage.removeItem('eyeRestTimer');
+				}
 				playSound();
 				sendNotification("✅ Pode voltar!", "💻 Você pode voltar ao trabalho. Próximo lembrete em 20 minutos.", {
 					tag: 'eye-rest-complete-continued',

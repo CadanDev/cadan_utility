@@ -16,6 +16,11 @@ function initializeApp() {
 
 	// Configura notificações para eventos do dia
 	setupEventNotifications();
+
+	// Inicializa o editor de notas
+	if (typeof initNotesEditor === 'function') {
+		initNotesEditor();
+	}
 }
 
 /**

@@ -263,3 +263,62 @@ $mobile-max: 768px;
 		font-size: 0.9rem;
 	}
 }
+
+// ===================================
+// NOTAS TEMPORÁRIAS
+// ===================================
+
+#notesEditor {
+	min-height: 400px;
+	background: $bg-white;
+	@include border-radius();
+
+	.ql-container {
+		font-family: inherit;
+		font-size: $font-base;
+		min-height: 400px;
+	}
+
+	.ql-editor {
+		min-height: 400px;
+		
+		&::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: $bg-lighter;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: $text-secondary;
+			@include border-radius(4px);
+
+			&:hover {
+				background: $text-primary;
+			}
+		}
+	}
+
+	.ql-toolbar {
+		border-top-left-radius: 0.375rem;
+		border-top-right-radius: 0.375rem;
+		background: $bg-lighter;
+	}
+}
+
+#notesSavedIndicator {
+	font-size: $font-sm;
+	margin-top: $spacing-lg;
+	transition: color 0.3s ease;
+}
+
+// Layout responsivo para as colunas
+@include mobile {
+	#mainContent {
+		.col-lg-7,
+		.col-lg-5 {
+			margin-bottom: $spacing-2xl;
+		}
+	}
+}

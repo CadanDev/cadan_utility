@@ -6,6 +6,7 @@
 class AuthManager {
     constructor() {
         this.currentUser = null;
+        this.offlineMode = false;
         this.baseURL = this.getBaseURL();
     }
 
@@ -52,8 +53,47 @@ class AuthManager {
 
     // Mostrar área de login (quando não logado)
     showLoginArea() {
-        document.getElementById('loginArea').style.display = 'block';
-        document.getElementById('mainContent').style.display = 'none';
+        const loginArea = document.getElementById('loginArea');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Adicionar opção de modo offline
+        loginArea.style.display = 'block';
+        mainContent.style.display = 'none';
+        
+        // Adicionar botão de modo offline se não existir
+        if (!document.getElementById('offlineModeBtn')) {
+            const offlineBtn = document.createElement('div');
+            offlineBtn.className = 'text-center mt-3';
+            offlineBtn.innerHTML = `
+                <button id="offlineModeBtn" class="btn btn-secondary" onclick="authManager.enableOfflineMode()">
+                    <i class="bi bi-wifi-off"></i> Usar Modo Offline
+                </button>
+                <p class="text-muted mt-2 small">Use o aplicativo sem login. Seus dados serão salvos apenas neste dispositivo.</p>
+            `;
+            loginArea.appendChild(offlineBtn);
+        }
+    }
+    
+    // Ativar modo offline
+    enableOfflineMode() {
+        this.currentUser = null;
+        this.offlineMode = true;
+        document.getElementById('loginArea').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        this.updateUserArea();
+        
+        // Carregar dados offline
+        if (typeof loadMedicineReminders === 'function') {
+            loadMedicineReminders();
+        }
+        if (typeof initializeCalendar === 'function') {
+            initializeCalendar();
+        }
+    }
+    
+    // Verificar se está no modo offline
+    isOfflineMode() {
+        return this.offlineMode === true;
     }
 
     // Atualizar área do usuário no navbar
@@ -70,6 +110,23 @@ class AuthManager {
                         <li><a class="dropdown-item" href="#" onclick="authManager.logout()">
                             <i class="bi bi-box-arrow-right"></i> Sair
                         </a></li>
+                    </ul>
+                </div>
+            `;
+        } else if (this.offlineMode) {
+            userArea.innerHTML = `
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-wifi-off"></i> Modo Offline
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="login.html">
+                            <i class="bi bi-box-arrow-in-right"></i> Fazer Login
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><span class="dropdown-item-text text-muted small">
+                            <i class="bi bi-info-circle"></i> Dados salvos localmente
+                        </span></li>
                     </ul>
                 </div>
             `;

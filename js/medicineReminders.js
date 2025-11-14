@@ -38,15 +38,25 @@ async function saveMedicineReminderToServer(time, medicineName, instructions = '
  * Salva os lembretes de medicamentos no localStorage (fallback)
  */
 function saveMedicineReminders() {
-	// Manter funcionamento local como backup
 	const reminders = [];
 	const remindersList = document.getElementById('medicineList');
 	remindersList.querySelectorAll('.reminder-item').forEach(item => {
 		const time = item.querySelector('.reminder-time').textContent;
 		const text = item.querySelector('.reminder-text').textContent;
-		reminders.push({ time, text });
+		const id = item.getAttribute('data-id');
+		reminders.push({ 
+			id: id || 'local_' + Date.now(), 
+			time, 
+			medicine_name: text,
+			instructions: ''
+		});
 	});
-	localStorage.setItem('medicineReminders', JSON.stringify(reminders));
+	
+	if (typeof offlineStorage !== 'undefined') {
+		offlineStorage.saveMedicineReminders(reminders);
+	} else {
+		localStorage.setItem('medicineReminders', JSON.stringify(reminders));
+	}
 }
 
 /**
@@ -85,12 +95,22 @@ async function loadMedicineRemindersFromServer() {
  * Carrega os lembretes de medicamentos do localStorage (fallback)
  */
 function loadMedicineReminders() {
-	const reminders = JSON.parse(localStorage.getItem('medicineReminders') || '[]');
+	let reminders;
+	
+	if (typeof offlineStorage !== 'undefined') {
+		reminders = offlineStorage.loadMedicineReminders();
+	} else {
+		reminders = JSON.parse(localStorage.getItem('medicineReminders') || '[]');
+	}
+	
 	const remindersList = document.getElementById('medicineList');
 	remindersList.innerHTML = '';
 
 	reminders.forEach(reminder => {
-		addReminderToList(reminder.time, reminder.text);
+		const displayText = reminder.instructions ? 
+			`${reminder.medicine_name} - ${reminder.instructions}` : 
+			reminder.medicine_name;
+		addReminderToList(reminder.time, displayText, reminder.id);
 	});
 
 	setupAllMedicineTimers();
@@ -109,16 +129,21 @@ async function addMedicineReminder() {
 	}
 
 	// Se autenticado, salvar no servidor
-	if (authManager.isAuthenticated()) {
+	if (authManager && authManager.isAuthenticated()) {
 		const reminderId = await saveMedicineReminderToServer(timeInput.value, textInput.value);
 		if (reminderId) {
 			addReminderToList(timeInput.value, textInput.value, reminderId);
 			setupAllMedicineTimers();
 		}
 	} else {
-		// Fallback para localStorage
-		addReminderToList(timeInput.value, textInput.value);
-		saveMedicineReminders();
+		// Modo offline - usar offlineStorage
+		if (typeof offlineStorage !== 'undefined') {
+			const reminder = offlineStorage.addMedicineReminder(timeInput.value, textInput.value);
+			addReminderToList(timeInput.value, textInput.value, reminder.id);
+		} else {
+			addReminderToList(timeInput.value, textInput.value);
+			saveMedicineReminders();
+		}
 		setupAllMedicineTimers();
 	}
 
@@ -183,7 +208,7 @@ async function removeReminder(button) {
 	const reminderId = reminderItem.getAttribute('data-id');
 
 	// Se tem ID e está autenticado, remover do servidor
-	if (reminderId && authManager.isAuthenticated()) {
+	if (reminderId && authManager && authManager.isAuthenticated()) {
 		const success = await removeMedicineReminderFromServer(reminderId);
 		if (success) {
 			reminderItem.remove();
@@ -192,7 +217,10 @@ async function removeReminder(button) {
 			alert('Erro ao remover lembrete do servidor');
 		}
 	} else {
-		// Fallback para localStorage
+		// Modo offline
+		if (reminderId && typeof offlineStorage !== 'undefined') {
+			offlineStorage.removeMedicineReminder(reminderId);
+		}
 		reminderItem.remove();
 		saveMedicineReminders();
 		setupAllMedicineTimers();

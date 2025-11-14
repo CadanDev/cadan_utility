@@ -10,6 +10,7 @@ function initializeCalendar() {
 	if (authManager && authManager.isAuthenticated()) {
 		loadEventsFromServer();
 	} else {
+		// Modo offline - usar offlineStorage
 		loadCalendarEvents();
 		renderCalendar();
 		renderUpcomingEvents();
@@ -58,8 +59,12 @@ async function loadEventsFromServer() {
  * Carrega eventos do calendário do localStorage (fallback)
  */
 function loadCalendarEvents() {
-	const events = localStorage.getItem('calendarEvents');
-	calendarEvents = events ? JSON.parse(events) : {};
+	if (typeof offlineStorage !== 'undefined') {
+		calendarEvents = offlineStorage.loadCalendarEvents();
+	} else {
+		const events = localStorage.getItem('calendarEvents');
+		calendarEvents = events ? JSON.parse(events) : {};
+	}
 }
 
 /**
@@ -121,7 +126,11 @@ async function removeEventFromServer(eventId) {
  * Salva eventos do calendário no localStorage (fallback)
  */
 function saveCalendarEvents() {
-	localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
+	if (typeof offlineStorage !== 'undefined') {
+		offlineStorage.saveCalendarEvents(calendarEvents);
+	} else {
+		localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
+	}
 }
 
 /**
@@ -392,7 +401,7 @@ async function addEvent() {
 	}
 
 	// Se autenticado, salvar no servidor
-	if (authManager.isAuthenticated()) {
+	if (authManager && authManager.isAuthenticated()) {
 		const eventId = await saveEventToServer(title, description, dateKey, time);
 		if (eventId) {
 			// Inicializa o array de eventos para a data se não existir
@@ -416,16 +425,32 @@ async function addEvent() {
 			renderUpcomingEvents();
 		}
 	} else {
-		// Fallback para localStorage
-		if (!calendarEvents[dateKey]) {
-			calendarEvents[dateKey] = [];
-		}
+		// Modo offline - usar offlineStorage
+		if (typeof offlineStorage !== 'undefined') {
+			const newEvent = offlineStorage.addCalendarEvent(title, description, dateKey, time);
+			
+			if (!calendarEvents[dateKey]) {
+				calendarEvents[dateKey] = [];
+			}
+			
+			calendarEvents[dateKey].push({
+				id: newEvent.id,
+				time: time,
+				title: title,
+				description: description
+			});
+		} else {
+			// Fallback para localStorage antigo
+			if (!calendarEvents[dateKey]) {
+				calendarEvents[dateKey] = [];
+			}
 
-		calendarEvents[dateKey].push({
-			time: time,
-			title: title,
-			description: description
-		});
+			calendarEvents[dateKey].push({
+				time: time,
+				title: title,
+				description: description
+			});
+		}
 
 		calendarEvents[dateKey].sort((a, b) => a.time.localeCompare(b.time));
 		saveCalendarEvents();
@@ -466,7 +491,7 @@ async function removeEventFromList(dateKey, index) {
 		
 		if (confirm(`Deseja remover o evento "${event.title}"?`)) {
 			// Se tem ID e está autenticado, remover do servidor
-			if (event.id && authManager.isAuthenticated()) {
+			if (event.id && authManager && authManager.isAuthenticated()) {
 				const success = await removeEventFromServer(event.id);
 				if (success) {
 					calendarEvents[dateKey].splice(index, 1);
@@ -483,7 +508,11 @@ async function removeEventFromList(dateKey, index) {
 					alert('Erro ao remover evento do servidor');
 				}
 			} else {
-				// Fallback para localStorage
+				// Modo offline - usar offlineStorage
+				if (event.id && typeof offlineStorage !== 'undefined') {
+					offlineStorage.removeCalendarEvent(dateKey, event.id);
+				}
+				
 				calendarEvents[dateKey].splice(index, 1);
 
 				if (calendarEvents[dateKey].length === 0) {
