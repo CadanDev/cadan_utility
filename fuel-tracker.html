@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Abastecimentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navbar será carregada aqui -->
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="bi bi-fuel-pump"></i> Controle de Abastecimentos</h1>
+            <p>Gerencie seus veículos e acompanhe gastos com combustível</p>
+        </div>
+
+        <!-- Seção de Carros -->
+        <div class="content-wrapper">
+            <div class="fuel-section">
+            <div class="section-header">
+                <h2>Meus Carros</h2>
+                <button id="addCarBtn" class="btn btn-primary">+ Adicionar Carro</button>
+            </div>
+
+            <div id="carsList" class="cars-grid"></div>
+        </div>
+    </div>
+
+        <!-- Modal: Adicionar/Editar Carro -->
+        <div id="carModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="carModalTitle">Adicionar Carro</h2>
+                <form id="carForm">
+                    <div class="form-group">
+                        <label for="carType">Tipo:</label>
+                        <select id="carType" required>
+                            <option value="">Selecione...</option>
+                            <option value="Hatch">Hatch</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Pickup">Pickup</option>
+                            <option value="Van">Van</option>
+                            <option value="Moto">Moto</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carBrand">Marca:</label>
+                        <input type="text" id="carBrand" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carNickname">Apelido:</label>
+                        <input type="text" id="carNickname" required placeholder="Ex: Meu Fusquinha">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carYear">Ano:</label>
+                        <input type="number" id="carYear" required min="1900" max="2100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carMileage">Quilometragem Atual (km):</label>
+                        <input type="number" id="carMileage" required step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carTankSize">Tamanho do Tanque (litros):</label>
+                        <input type="number" id="carTankSize" required step="0.01" min="0">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" id="cancelCarBtn">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Detalhes do Carro e Abastecimentos -->
+        <div id="carDetailsModal" class="modal">
+            <div class="modal-content modal-large">
+                <span class="close">&times;</span>
+                <div id="carDetailsHeader"></div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="fuel-logs">Abastecimentos</button>
+                    <button class="tab-btn" data-tab="statistics">Estatísticas</button>
+                </div>
+
+                <div id="fuel-logs" class="tab-content active">
+                    <div class="section-header">
+                        <h3>Histórico de Abastecimentos</h3>
+                        <button id="addFuelLogBtn" class="btn btn-primary">+ Registrar Abastecimento</button>
+                    </div>
+                    <div id="fuelLogsList"></div>
+                </div>
+
+                <div id="statistics" class="tab-content">
+                    <h3>Estatísticas</h3>
+                    <div id="statisticsContent" class="statistics-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Adicionar/Editar Abastecimento -->
+        <div id="fuelLogModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="fuelLogModalTitle">Registrar Abastecimento</h2>
+                <form id="fuelLogForm">
+                    <div class="form-group">
+                        <label for="fuelAmount">Valor (R$):</label>
+                        <input type="number" id="fuelAmount" required step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fuelLiters">Litros:</label>
+                        <input type="number" id="fuelLiters" required step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fuelMileage">Quilometragem (km):</label>
+                        <input type="number" id="fuelMileage" required step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fuelType">Combustível:</label>
+                        <select id="fuelType" required>
+                            <option value="">Selecione...</option>
+                            <option value="Gasolina Comum">Gasolina Comum</option>
+                            <option value="Gasolina Aditivada">Gasolina Aditivada</option>
+                            <option value="Etanol">Etanol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Diesel S10">Diesel S10</option>
+                            <option value="GNV">GNV</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" id="cancelFuelLogBtn">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/fuelTracker.js"></script>
+</body>
+</html>

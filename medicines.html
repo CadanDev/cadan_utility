@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembretes de Remédios - Sistema de Lembretes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar será carregada aqui -->
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="bi bi-capsule"></i> Lembretes de Remédios</h1>
+            <p>Configure alertas para não esquecer seus medicamentos.</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Adicionar Lembrete</h2>
+                    <button class="btn btn-icon" onclick="showMedicineAlert('Teste de Remédio')" title="Testar alerta">
+                        <i class="bi bi-bell"></i> Testar
+                    </button>
+                </div>
+
+                <div class="card-body">
+                    <form id="medicineForm" class="medicine-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="medicineTime">
+                                    <i class="bi bi-clock"></i> Horário
+                                </label>
+                                <input type="time" id="medicineTime" class="form-control" required>
+                            </div>
+
+                            <div class="form-group flex-grow">
+                                <label for="medicineText">
+                                    <i class="bi bi-prescription2"></i> Nome do Remédio
+                                </label>
+                                <input type="text" id="medicineText" class="form-control" 
+                                    placeholder="Ex: Vitamina D, Omeprazol..." required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-primary" onclick="addMedicineReminder()">
+                                    <i class="bi bi-plus-circle"></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medicineInstructions">
+                                <i class="bi bi-journal-text"></i> Instruções (opcional)
+                            </label>
+                            <textarea id="medicineInstructions" class="form-control" rows="2"
+                                placeholder="Ex: Tomar com água, após as refeições..."></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Meus Lembretes</h2>
+                    <span class="badge" id="medicineCount">0</span>
+                </div>
+
+                <div class="card-body">
+                    <div id="medicineList" class="medicine-list">
+                        <!-- Lista será preenchida pelo JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3><i class="bi bi-info-circle"></i> Dicas Importantes</h3>
+                <ul>
+                    <li>Configure os horários dos seus medicamentos conforme prescrição médica</li>
+                    <li>Você receberá notificações sonoras e visuais no horário configurado</li>
+                    <li>Mantenha seu navegador aberto para receber os alertas</li>
+                    <li>Consulte sempre seu médico antes de tomar qualquer medicamento</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/offlineStorage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/medicineReminders.js"></script>
+</body>
+</html>

@@ -48,7 +48,7 @@ class AuthManager {
     // Mostrar área principal (quando logado)
     showMainContent() {
         document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('mainContent').style.display = 'flex';
     }
 
     // Mostrar área de login (quando não logado)
@@ -79,7 +79,7 @@ class AuthManager {
         this.currentUser = null;
         this.offlineMode = true;
         document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('mainContent').style.display = 'flex';
         this.updateUserArea();
         
         // Carregar dados offline

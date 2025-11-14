@@ -35,6 +35,192 @@ $font-base: 1rem;
 
 // Breakpoints
 $mobile-max: 768px;
+$tablet-max: 1024px;
+
+// ===================================
+// RESET E GLOBAL
+// ===================================
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	background: $bg-light;
+	color: $text-primary;
+	line-height: 1.6;
+	padding-top: 70px; // Espaço para navbar fixa
+}
+
+// ===================================
+// NAVBAR
+// ===================================
+
+.main-navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: $bg-white;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	padding: $spacing-2xl 0;
+}
+
+.navbar-container {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 0 $spacing-2xl;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: $spacing-3xl;
+}
+
+.navbar-brand {
+	display: flex;
+	align-items: center;
+	gap: $spacing-xl;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: $primary-color;
+	text-decoration: none;
+	white-space: nowrap;
+
+	i {
+		font-size: 1.5rem;
+	}
+
+	span {
+		@media (max-width: 480px) {
+			display: none;
+		}
+	}
+}
+
+.navbar-toggle {
+	display: none;
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: $text-primary;
+
+	@media (max-width: $mobile-max) {
+		display: block;
+	}
+}
+
+.navbar-menu {
+	display: flex;
+	list-style: none;
+	gap: $spacing-xl;
+	flex: 1;
+	justify-content: center;
+
+	@media (max-width: $mobile-max) {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: $bg-white;
+		flex-direction: column;
+		padding: $spacing-2xl;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		display: none;
+		gap: 0;
+
+		&.active {
+			display: flex;
+		}
+	}
+
+	li {
+		margin: 0;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		gap: $spacing-lg;
+		padding: $spacing-xl $spacing-2xl;
+		color: $text-secondary;
+		text-decoration: none;
+		border-radius: 0.375rem;
+		transition: all 0.3s ease;
+		font-weight: 500;
+
+		i {
+			font-size: 1.1rem;
+		}
+
+		&:hover {
+			background: $bg-light;
+			color: $primary-color;
+		}
+
+		&.active {
+			background: lighten($primary-color, 45%);
+			color: $primary-color;
+		}
+
+		@media (max-width: $mobile-max) {
+			padding: $spacing-2xl;
+			border-radius: 0;
+			border-bottom: 1px solid $border-color;
+		}
+	}
+}
+
+.navbar-user {
+	@media (max-width: $mobile-max) {
+		display: none;
+	}
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: $spacing-2xl;
+
+	.user-name, .guest-mode {
+		font-weight: 500;
+		color: $text-primary;
+		display: flex;
+		align-items: center;
+		gap: $spacing-lg;
+	}
+
+	.btn-logout, .btn-login {
+		padding: $spacing-xl $spacing-2xl;
+		background: $primary-color;
+		color: white;
+		border: none;
+		border-radius: 0.375rem;
+		cursor: pointer;
+		text-decoration: none;
+		display: flex;
+		align-items: center;
+		gap: $spacing-lg;
+		font-weight: 500;
+		transition: background 0.3s ease;
+
+		&:hover {
+			background: $primary-hover;
+		}
+	}
+
+	.btn-logout {
+		background: $danger-color;
+
+		&:hover {
+			background: darken($danger-color, 10%);
+		}
+	}
+}
 
 // ===================================
 // MIXINS
@@ -49,8 +235,427 @@ $mobile-max: 768px;
 @mixin flex-column-start {
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+@mixin flex-between {
+	display: flex;
+	justify-content: space-between;
 	align-items: center;
+}
+
+@mixin mobile {
+	@media (max-width: $mobile-max) {
+		@content;
+	}
+}
+
+// ===================================
+// LAYOUT PAGES
+// ===================================
+
+.page-container {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: $spacing-3xl;
+
+	@include mobile {
+		padding: $spacing-2xl;
+	}
+}
+
+.page-header {
+	margin-bottom: $spacing-3xl;
+	text-align: center;
+
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: $spacing-2xl;
+		color: $text-primary;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: $spacing-2xl;
+
+		@include mobile {
+			font-size: 1.75rem;
+			flex-direction: column;
+			gap: $spacing-xl;
+		}
+
+		i {
+			color: $primary-color;
+		}
+	}
+
+	p {
+		font-size: 1.125rem;
+		color: $text-secondary;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+}
+
+.content-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-3xl;
+}
+
+// ===================================
+// DASHBOARD
+// ===================================
+
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: $spacing-3xl;
+	margin-bottom: $spacing-3xl;
+
+	@include mobile {
+		grid-template-columns: 1fr;
+	}
+}
+
+.dashboard-card {
+	background: $bg-white;
+	border-radius: 0.75rem;
+	padding: $spacing-3xl;
+	text-decoration: none;
+	color: $text-primary;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-2xl;
+
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+
+		.card-icon {
+			transform: scale(1.1);
+		}
+	}
+
+	.card-icon {
+		width: 70px;
+		height: 70px;
+		border-radius: 50%;
+		@include flex-center;
+		font-size: 2rem;
+		transition: transform 0.3s ease;
+		color: white;
+
+		&.eye-rest {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		}
+
+		&.medicines {
+			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+		}
+
+		&.calendar {
+			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+		}
+
+		&.notes {
+			background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+		}
+
+		&.fuel {
+			background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+		}
+	}
+
+	h3 {
+		font-size: 1.5rem;
+		margin: 0;
+	}
+
+	p {
+		color: $text-secondary;
+		margin: 0;
+		flex: 1;
+	}
+
+	.card-footer {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		color: $primary-color;
+		font-weight: 500;
+		gap: $spacing-lg;
+	}
+}
+
+.tips-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: $spacing-2xl;
+}
+
+.tip-card {
+	background: $bg-white;
+	padding: $spacing-3xl;
+	border-radius: 0.5rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+	i {
+		font-size: 2rem;
+		color: $primary-color;
+		margin-bottom: $spacing-2xl;
+	}
+
+	h4 {
+		margin-bottom: $spacing-xl;
+		color: $text-primary;
+	}
+
+	p {
+		color: $text-secondary;
+		margin: 0;
+		font-size: $font-md;
+	}
+}
+
+// ===================================
+// CARDS GERAIS
+// ===================================
+
+.card {
+	background: $bg-white;
+	border-radius: 0.5rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+
+	.card-header {
+		@include flex-between;
+		padding: $spacing-3xl;
+		border-bottom: 1px solid $border-color;
+		background: $bg-light;
+
+		h2, h3 {
+			margin: 0;
+			font-size: 1.25rem;
+		}
+	}
+
+	.card-body {
+		padding: $spacing-3xl;
+	}
+
+	.card-footer {
+		padding: $spacing-2xl $spacing-3xl;
+		background: $bg-light;
+		border-top: 1px solid $border-color;
+	}
+}
+
+// ===================================
+// BOTÕES
+// ===================================
+
+.btn {
+	padding: $spacing-xl $spacing-3xl;
+	border: none;
+	border-radius: 0.375rem;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: $font-base;
+	transition: all 0.3s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: $spacing-lg;
+	text-decoration: none;
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.btn-primary {
+	background: $primary-color;
+	color: white;
+
+	&:hover:not(:disabled) {
+		background: $primary-hover;
+	}
+}
+
+.btn-secondary {
+	background: $text-secondary;
+	color: white;
+
+	&:hover:not(:disabled) {
+		background: darken($text-secondary, 10%);
+	}
+}
+
+.btn-success {
+	background: $success-color;
+	color: white;
+
+	&:hover:not(:disabled) {
+		background: darken($success-color, 10%);
+	}
+}
+
+.btn-danger {
+	background: $danger-color;
+	color: white;
+
+	&:hover:not(:disabled) {
+		background: darken($danger-color, 10%);
+	}
+}
+
+.btn-warning {
+	background: #ffc107;
+	color: $text-primary;
+
+	&:hover:not(:disabled) {
+		background: darken(#ffc107, 10%);
+	}
+}
+
+.btn-outline {
+	background: transparent;
+	border: 1px solid $border-color;
+	color: $text-secondary;
+
+	&:hover:not(:disabled) {
+		background: $bg-light;
+	}
+}
+
+.btn-lg {
+	padding: $spacing-2xl $spacing-3xl;
+	font-size: 1.125rem;
+}
+
+.btn-sm {
+	padding: $spacing-lg $spacing-2xl;
+	font-size: $font-md;
+}
+
+// ===================================
+// FORMULÁRIOS
+// ===================================
+
+.form-group {
+	margin-bottom: $spacing-2xl;
+
+	label {
+		display: block;
+		margin-bottom: $spacing-lg;
+		font-weight: 500;
+		color: $text-primary;
+	}
+
+	&.flex-grow {
+		flex: 1;
+	}
+}
+
+.form-control {
+	width: 100%;
+	padding: $spacing-xl $spacing-2xl;
+	border: 1px solid $border-color;
+	border-radius: 0.375rem;
+	font-size: $font-base;
+	transition: border-color 0.3s ease;
+
+	&:focus {
+		outline: none;
+		border-color: $primary-color;
+		box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+	}
+}
+
+.form-row {
+	display: flex;
+	gap: $spacing-2xl;
+	flex-wrap: wrap;
+
+	@include mobile {
+		flex-direction: column;
+	}
+}
+
+.form-actions {
+	display: flex;
+	gap: $spacing-2xl;
+	justify-content: flex-end;
+	margin-top: $spacing-3xl;
+
+	@include mobile {
+		flex-direction: column;
+
+		.btn {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+}
+
+// ===================================
+// INFO SECTIONS
+// ===================================
+
+.info-section {
+	background: $bg-white;
+	padding: $spacing-3xl;
+	border-radius: 0.5rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+	h2, h3 {
+		margin-bottom: $spacing-3xl;
+		display: flex;
+		align-items: center;
+		gap: $spacing-2xl;
+
+		i {
+			color: $primary-color;
+		}
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+
+		li {
+			padding: $spacing-xl 0;
+			padding-left: $spacing-3xl;
+			position: relative;
+
+			&:before {
+				content: '✓';
+				position: absolute;
+				left: 0;
+				color: $success-color;
+				font-weight: bold;
+			}
+		}
+	}
+}
+
+.features-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: $spacing-2xl;
+}
+
+.feature-item {
+	display: flex;
+	align-items: center;
+	gap: $spacing-2xl;
+
+	i {
+		font-size: 1.5rem;
+		color: $primary-color;
+	}
 }
 
 @mixin transition($property: all, $duration: 0.2s) {
@@ -320,5 +925,238 @@ $mobile-max: 768px;
 		.col-lg-5 {
 			margin-bottom: $spacing-2xl;
 		}
+	}
+}
+
+// ===================================
+// FUEL TRACKER - ESTILOS
+// ===================================
+
+.fuel-section {
+	margin-bottom: $spacing-3xl;
+}
+
+.section-header {
+	@include flex-between;
+	margin-bottom: $spacing-2xl;
+
+	h2, h3 {
+		margin: 0;
+	}
+}
+
+.cars-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: $spacing-2xl;
+
+	@include mobile {
+		grid-template-columns: 1fr;
+	}
+}
+
+.car-card {
+	background: $bg-white;
+	border: 1px solid $border-color;
+	border-radius: 0.5rem;
+	padding: $spacing-2xl;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.car-card-header {
+	@include flex-between;
+	margin-bottom: $spacing-2xl;
+	padding-bottom: $spacing-2xl;
+	border-bottom: 1px solid $border-color;
+
+	h3 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+}
+
+.car-card-body {
+	p {
+		margin: $spacing-xl 0;
+		font-size: $font-md;
+	}
+}
+
+.car-actions {
+	display: flex;
+	gap: $spacing-lg;
+}
+
+.btn-icon {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 1.2rem;
+	padding: $spacing-sm;
+	transition: transform 0.2s ease;
+
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
+.btn-block {
+	width: 100%;
+	margin-top: $spacing-2xl;
+}
+
+.modal-large {
+	max-width: 900px;
+	max-height: 90vh;
+	overflow-y: auto;
+}
+
+.tabs {
+	display: flex;
+	gap: $spacing-lg;
+	border-bottom: 2px solid $border-color;
+	margin-bottom: $spacing-2xl;
+}
+
+.tab-btn {
+	padding: $spacing-2xl;
+	background: none;
+	border: none;
+	border-bottom: 3px solid transparent;
+	cursor: pointer;
+	font-size: $font-base;
+	font-weight: 500;
+	color: $text-secondary;
+	transition: all 0.3s ease;
+
+	&:hover {
+		color: $primary-color;
+	}
+
+	&.active {
+		color: $primary-color;
+		border-bottom-color: $primary-color;
+	}
+}
+
+.tab-content {
+	display: none;
+
+	&.active {
+		display: block;
+	}
+}
+
+.car-info-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: $spacing-2xl;
+	margin-top: $spacing-2xl;
+	padding: $spacing-2xl;
+	background: $bg-light;
+	border-radius: 0.375rem;
+}
+
+.fuel-logs-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: $spacing-2xl;
+
+	thead {
+		background: $bg-light;
+
+		th {
+			padding: $spacing-2xl;
+			text-align: left;
+			font-weight: 600;
+			border-bottom: 2px solid $border-color;
+		}
+	}
+
+	tbody {
+		tr {
+			border-bottom: 1px solid $border-color;
+			transition: background 0.2s ease;
+
+			&:hover {
+				background: $bg-light;
+			}
+		}
+
+		td {
+			padding: $spacing-2xl;
+		}
+	}
+}
+
+.table-actions {
+	display: flex;
+	gap: $spacing-lg;
+}
+
+.statistics-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: $spacing-2xl;
+	margin-top: $spacing-2xl;
+}
+
+.stat-card {
+	background: $bg-light;
+	padding: $spacing-2xl;
+	border-radius: 0.5rem;
+	text-align: center;
+	border: 2px solid $border-color;
+
+	h4 {
+		margin: 0 0 $spacing-2xl 0;
+		font-size: $font-md;
+		color: $text-secondary;
+		font-weight: 500;
+	}
+
+	.stat-value {
+		margin: 0;
+		font-size: 1.75rem;
+		font-weight: 700;
+		color: $primary-color;
+	}
+}
+
+.no-data {
+	text-align: center;
+	color: $text-secondary;
+	padding: $spacing-3xl;
+	font-style: italic;
+}
+
+.header-actions {
+	@include flex-center;
+	gap: $spacing-2xl;
+
+	#userGreeting {
+		font-weight: 500;
+		color: $text-primary;
+	}
+}
+
+// Responsividade para tabelas
+@include mobile {
+	.fuel-logs-table {
+		font-size: $font-sm;
+
+		thead th,
+		tbody td {
+			padding: $spacing-xl;
+		}
+	}
+
+	.statistics-grid {
+		grid-template-columns: 1fr;
 	}
 }

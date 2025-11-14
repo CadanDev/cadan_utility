@@ -1,274 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 	<meta charset="UTF-8">
-	<title>Lembrete: Olhe longe</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard - Sistema de Lembretes</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
-	<!-- Quill Rich Text Editor -->
-	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 	<link href="css/styles.css" rel="stylesheet">
-
-	<!-- Scripts JavaScript -->
-	<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-	<script src="js/offlineStorage.js"></script>
-	<script src="js/auth.js"></script>
-	<script src="js/utils.js"></script>
-	<script src="js/eyeRestTimer.js"></script>
-	<script src="js/medicineReminders.js"></script>
-	<script src="js/calendar.js"></script>
-	<script src="js/notes.js"></script>
-	<script src="js/app.js"></script>
 </head>
+<body>
+	<!-- Navbar será carregada aqui -->
 
-<body class="bg-light">
-	<!-- Área de Login/Usuário -->
-	<nav class="navbar navbar-light bg-white shadow-sm">
-		<div class="container">
-			<a class="navbar-brand" href="#">
-				<i class="bi bi-clipboard-heart text-primary"></i> Sistema de Lembretes
-			</a>
-			<div id="userArea">
-				<!-- Será preenchido pelo JavaScript -->
-			</div>
+	<div class="page-container">
+		<div class="page-header">
+			<h1><i class="bi bi-house-door"></i> Dashboard</h1>
+			<p>Bem-vindo ao seu sistema de lembretes e organização pessoal</p>
 		</div>
-	</nav>
 
-	<div class="container py-5">
-		<!-- Área de Login (mostrada quando não logado) -->
-		<div id="loginArea" class="row justify-content-center" style="display: none;">
-			<div class="col-md-6">
-				<div class="card shadow">
-					<div class="card-body text-center">
-						<h3><i class="bi bi-shield-lock"></i> Acesso Restrito</h3>
-						<p class="mb-4">Você precisa estar logado para acessar o sistema de lembretes.</p>
-						<a href="login.html" class="btn btn-primary me-2">
-							<i class="bi bi-box-arrow-in-right"></i> Fazer Login
-						</a>
-						<a href="register.html" class="btn btn-outline-primary">
-							<i class="bi bi-person-plus"></i> Cadastrar-se
-						</a>
+		<div class="content-wrapper">
+			<div class="dashboard-grid">
+				<!-- Card: Descanso de Olhos -->
+				<a href="eye-rest.html" class="dashboard-card">
+					<div class="card-icon eye-rest">
+						<i class="bi bi-eye"></i>
+					</div>
+					<h3>Descanso de Olhos</h3>
+					<p>Timer 20-20-20 para saúde dos seus olhos</p>
+					<div class="card-footer">
+						<span>Acessar <i class="bi bi-arrow-right"></i></span>
+					</div>
+				</a>
+
+				<!-- Card: Lembretes de Remédios -->
+				<a href="medicines.html" class="dashboard-card">
+					<div class="card-icon medicines">
+						<i class="bi bi-capsule"></i>
+					</div>
+					<h3>Lembretes de Remédios</h3>
+					<p>Configure alertas para seus medicamentos</p>
+					<div class="card-footer">
+						<span>Acessar <i class="bi bi-arrow-right"></i></span>
+					</div>
+				</a>
+
+				<!-- Card: Calendário -->
+				<a href="calendar.html" class="dashboard-card">
+					<div class="card-icon calendar">
+						<i class="bi bi-calendar3"></i>
+					</div>
+					<h3>Calendário</h3>
+					<p>Organize eventos e compromissos</p>
+					<div class="card-footer">
+						<span>Acessar <i class="bi bi-arrow-right"></i></span>
+					</div>
+				</a>
+
+				<!-- Card: Notas -->
+				<a href="notes.html" class="dashboard-card">
+					<div class="card-icon notes">
+						<i class="bi bi-journal-text"></i>
+					</div>
+					<h3>Minhas Notas</h3>
+					<p>Escreva e salve suas anotações</p>
+					<div class="card-footer">
+						<span>Acessar <i class="bi bi-arrow-right"></i></span>
+					</div>
+				</a>
+
+				<!-- Card: Abastecimentos -->
+				<a href="fuel-tracker.html" class="dashboard-card">
+					<div class="card-icon fuel">
+						<i class="bi bi-fuel-pump"></i>
+					</div>
+					<h3>Controle de Abastecimentos</h3>
+					<p>Gerencie gastos com combustível</p>
+					<div class="card-footer">
+						<span>Acessar <i class="bi bi-arrow-right"></i></span>
+					</div>
+				</a>
+			</div>
+
+			<!-- Seção de Informações -->
+			<div class="info-section">
+				<h2><i class="bi bi-lightbulb"></i> Dicas de Uso</h2>
+				<div class="tips-grid">
+					<div class="tip-card">
+						<i class="bi bi-bell"></i>
+						<h4>Notificações</h4>
+						<p>Mantenha o navegador aberto para receber alertas em tempo real</p>
+					</div>
+					<div class="tip-card">
+						<i class="bi bi-cloud-check"></i>
+						<h4>Sincronização</h4>
+						<p>Seus dados são salvos automaticamente na nuvem quando logado</p>
+					</div>
+					<div class="tip-card">
+						<i class="bi bi-phone"></i>
+						<h4>Responsivo</h4>
+						<p>Acesse de qualquer dispositivo - celular, tablet ou computador</p>
+					</div>
+					<div class="tip-card">
+						<i class="bi bi-shield-check"></i>
+						<h4>Privacidade</h4>
+						<p>Seus dados são protegidos e apenas você tem acesso a eles</p>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- Área Principal (mostrada quando logado) -->
-		<div id="mainContent" class="row" style="display: none;">
-			<!-- Coluna Principal -->
-			<div class="col-lg-7">
-				<div class="card shadow">
-					<div class="card-body">
-						<div class="d-flex justify-content-between align-items-center mb-3">
-							<h3 class="card-title mb-0">
-								<i class="bi bi-eye text-primary"></i> Descanso de olhos
-							</h3>
-							<div class="btn-group" role="group">
-								<button id="testSoundBtn" class="btn btn-outline-secondary btn-sm" onclick="playSound()"
-									title="Testar som da notificação">
-									<i class="bi bi-volume-up"></i>
-								</button>
-								<button id="testNotificationBtn" class="btn btn-outline-info btn-sm" 
-									onclick="sendNotification('🧪 Teste de Notificação', 'Esta é uma notificação de teste do Windows!', {tag: 'test'})"
-									title="Testar notificação do Windows">
-									<i class="bi bi-bell"></i>
-								</button>
-							</div>
-						</div>
-						<p class="card-text mb-4">
-							Você receberá um alerta a cada 20 minutos para olhar longe por 20 segundos.
-						</p>
-						<div class="progress mb-4" style="height: 30px;">
-							<div id="progressBar" class="progress-bar bg-primary" role="progressbar" style="width: 0%;"
-								aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-							</div>
-						</div>
-						<button id="start20secBtn" class="btn btn-success btn-lg mb-3" onclick="start20SecTimer()">
-							<i class="bi bi-play-circle"></i> Iniciar 20 segundos
-						</button>
-						<div id="status" class="fw-bold text-success mt-3"></div>
-
-						<!-- Seção de Lembretes de Remédios -->
-						<div class="medicine-section">
-							<div class="d-flex justify-content-between align-items-center mb-3">
-								<h2 class="h4 mb-0">
-									<i class="bi bi-capsule text-success"></i> Lembretes de Remédios
-								</h2>
-								<button class="btn btn-outline-warning btn-sm" onclick="showMedicineAlert('Vitamina D - Teste')"
-									title="Testar alerta de medicamento">
-									<i class="bi bi-bell"></i> Testar Alerta
-								</button>
-							</div>
-
-							<div class="row mb-3">
-								<div class="col-md-4">
-									<div class="input-group">
-										<span class="input-group-text"><i class="bi bi-clock"></i></span>
-										<input type="time" id="medicineTime" class="form-control" placeholder="Horário">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="input-group">
-										<span class="input-group-text"><i class="bi bi-prescription2"></i></span>
-										<input type="text" id="medicineText" class="form-control"
-											placeholder="Nome do remédio/instrução">
-									</div>
-								</div>
-								<div class="col-md-2">
-									<button class="btn btn-primary w-100" onclick="addMedicineReminder()">
-										<i class="bi bi-plus-circle"></i> Adicionar
-									</button>
-								</div>
-							</div>
-
-							<div id="medicineList" class="mb-3">
-								<!-- Lembretes serão adicionados aqui -->
-							</div>
-						</div>
-
-						<!-- Seção do Calendário -->
-						<div class="row">
-							<h2 class="h4 mb-3 col-12">
-								<i class="bi bi-calendar3 text-info"></i> Calendário de Eventos
-							</h2>
-							<div class="calendar-section col-md-6">
-
-								<!-- Navegação do Calendário -->
-								<div class="calendar-navigation d-flex justify-content-between align-items-center mb-3">
-									<button class="btn btn-outline-primary" onclick="previousMonth()">
-										<i class="bi bi-chevron-left"></i>
-									</button>
-									<h5 id="monthYear" class="mb-0"></h5>
-									<button class="btn btn-outline-primary" onclick="nextMonth()">
-										<i class="bi bi-chevron-right"></i>
-									</button>
-								</div>
-
-								<div class="text-center mb-3">
-									<button class="btn btn-sm btn-secondary" onclick="goToToday()">
-										<i class="bi bi-house"></i> Hoje
-									</button>
-								</div>
-
-								<!-- Grade do Calendário -->
-								<div id="calendar" class="calendar-grid mb-3"></div>
-							</div>
-							<!-- Coluna da Lista de Eventos -->
-							<div class="col-md-6">
-								<div class="d-flex justify-content-between align-items-center mb-3">
-									<h4 class="h4 mb-0">
-										<i class="bi bi-list-ul text-info"></i> Próximos Eventos
-									</h4>
-									<button class="btn btn-success" onclick="openAddEventModal()">
-										<i class="bi bi-plus-circle"></i> Adicionar
-									</button>
-								</div>
-
-								<!-- Filtro de Data -->
-								<div class="mb-3">
-									<button id="clearFilterBtn" class="btn btn-sm btn-outline-secondary"
-										onclick="clearDateFilter()" style="display: none;">
-										<i class="bi bi-x-circle"></i> Limpar Filtro
-									</button>
-									<span id="filterInfo" class="text-muted small"></span>
-								</div>
-
-								<!-- Lista de Eventos Futuros -->
-								<div id="upcomingEventsList" class="upcoming-events-list">
-									<!-- Eventos serão carregados aqui -->
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Fim da coluna principal -->
-
-			<!-- Coluna de Notas -->
-			<div class="col-lg-5">
-				<div class="card shadow h-100">
-					<div class="card-body d-flex flex-column">
-						<div class="d-flex justify-content-between align-items-center mb-3">
-							<h3 class="card-title mb-0">
-								<i class="bi bi-journal-text text-warning"></i> Notas Temporárias
-							</h3>
-							<button class="btn btn-sm btn-outline-danger" onclick="clearNotes()" title="Limpar notas">
-								<i class="bi bi-trash"></i>
-							</button>
-						</div>
-						<p class="text-muted small mb-3">
-							<i class="bi bi-info-circle"></i> Use este espaço para anotações rápidas. As notas são salvas automaticamente.
-						</p>
-						<!-- Editor Quill -->
-						<div id="notesEditor" class="flex-grow-1"></div>
-						<div class="text-muted small mt-2" id="notesSavedIndicator">
-							<i class="bi bi-check-circle text-success"></i> Salvo automaticamente
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Fim da coluna de notas -->
-		</div>
-		</div> <!-- Fim do mainContent -->
-
-		<!-- Modal para Adicionar Evento -->
-		<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">
-							<i class="bi bi-calendar-plus"></i> Adicionar Novo Evento
-						</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form onsubmit="event.preventDefault(); addEvent();">
-							<div class="mb-3">
-								<label for="eventDate" class="form-label">
-									<i class="bi bi-calendar3"></i> Data do Evento
-								</label>
-								<input type="date" id="eventDate" class="form-control" required>
-							</div>
-
-							<div class="mb-3">
-								<label for="eventTime" class="form-label">
-									<i class="bi bi-clock"></i> Horário
-								</label>
-								<input type="time" id="eventTime" class="form-control" required>
-							</div>
-
-							<div class="mb-3">
-								<label for="eventTitle" class="form-label">
-									<i class="bi bi-bookmark"></i> Título do Evento
-								</label>
-								<input type="text" id="eventTitle" class="form-control"
-									placeholder="Digite o título do evento" required>
-							</div>
-
-							<div class="mb-3">
-								<label for="eventDescription" class="form-label">
-									<i class="bi bi-card-text"></i> Descrição (opcional)
-								</label>
-								<textarea id="eventDescription" class="form-control" rows="3"
-									placeholder="Digite uma descrição para o evento"></textarea>
-							</div>
-
-							<div class="d-flex justify-content-end gap-2">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-									<i class="bi bi-x-circle"></i> Cancelar
-								</button>
-								<button type="submit" class="btn btn-primary">
-									<i class="bi bi-calendar-plus"></i> Adicionar Evento
-								</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="js/navbar.js"></script>
+	<script src="js/auth.js"></script>
 </body>
-
 </html>

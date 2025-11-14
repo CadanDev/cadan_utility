@@ -83,6 +83,42 @@ function start20SecTimer() {
 }
 
 /**
+ * Inicia automaticamente o timer de descanso de olhos
+ */
+function startEyeRestTimer() {
+	restoreTimerState();
+}
+
+/**
+ * Pausa o timer atual
+ */
+function pauseTimer() {
+	if (timer20min) {
+		clearTimeout(timer20min);
+		timer20min = null;
+	}
+	if (timer20sec) {
+		clearTimeout(timer20sec);
+		timer20sec = null;
+	}
+	localStorage.removeItem('eyeRestTimer');
+	document.getElementById('status').innerHTML = '<i class="bi bi-pause-circle text-warning me-2"></i>Timer pausado';
+}
+
+/**
+ * Para o timer completamente
+ */
+function stopTimer() {
+	pauseTimer();
+	const progressBar = document.getElementById('progressBar');
+	if (progressBar) {
+		progressBar.style.width = '0%';
+		progressBar.textContent = '';
+	}
+	document.getElementById('status').innerHTML = '';
+}
+
+/**
  * Restaura o estado do timer a partir do localStorage
  */
 function restoreTimerState() {
@@ -94,6 +130,7 @@ function restoreTimerState() {
 		timerData = data ? JSON.parse(data) : null;
 	}
 	if (!timerData) {
+		// Se não há timer salvo, inicia automaticamente
 		start20MinTimer();
 		return;
 	}
