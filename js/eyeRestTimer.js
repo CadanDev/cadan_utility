@@ -125,10 +125,20 @@ function pauseTimer() {
 function stopTimer() {
 	pauseTimer();
 	const progressBar = document.getElementById('progressBar');
+	const progressCircle = document.getElementById('progressCircle');
+	const progressRing = document.querySelector('.progress-ring');
+	
 	if (progressBar) {
 		progressBar.style.width = '0%';
 		progressBar.textContent = '';
 	}
+	if (progressCircle) {
+		progressCircle.style.strokeDashoffset = 565.48; // Reseta o círculo
+	}
+	if (progressRing) {
+		progressRing.classList.remove('rest-mode');
+	}
+	
 	const timerText = document.getElementById('timerText');
 	if (timerText) {
 		timerText.textContent = '20:00';
@@ -249,14 +259,32 @@ function updateProgressWithTimer(duration, progressBar, startTime) {
 	}
 	
 	const timerText = document.getElementById('timerText');
+	const progressCircle = document.getElementById('progressCircle');
+	const progressRing = document.querySelector('.progress-ring');
+	const circumference = 2 * Math.PI * 90; // raio = 90
 	
 	function updateDisplay() {
 		const elapsed = Date.now() - startTime;
 		const remaining = Math.max(0, duration - elapsed);
 		const percent = Math.min((elapsed / duration) * 100, 100);
 		
-		// Atualiza barra de progresso
+		// Atualiza barra de progresso horizontal
 		progressBar.style.width = percent + "%";
+		
+		// Atualiza anel de progresso circular
+		if (progressCircle) {
+			const offset = circumference - (percent / 100) * circumference;
+			progressCircle.style.strokeDashoffset = offset;
+		}
+		
+		// Adiciona classe para modo de descanso (20 segundos)
+		if (progressRing) {
+			if (duration === 20000) {
+				progressRing.classList.add('rest-mode');
+			} else {
+				progressRing.classList.remove('rest-mode');
+			}
+		}
 		
 		// Atualiza texto do timer
 		const minutes = Math.floor(remaining / 60000);
