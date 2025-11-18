@@ -186,6 +186,21 @@ body {
 	align-items: center;
 	gap: $spacing-2xl;
 
+	.user-profile {
+		display: flex;
+		align-items: center;
+		gap: $spacing-xl;
+	}
+
+	.user-avatar {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid $border-color;
+		background: $bg-lighter;
+	}
+
 	.user-name, .guest-mode {
 		font-weight: 500;
 		color: $text-primary;
@@ -218,6 +233,121 @@ body {
 
 		&:hover {
 			background: darken($danger-color, 10%);
+		}
+	}
+}
+
+// Dropdown de usuário
+.user-dropdown {
+	position: relative;
+}
+
+.user-dropdown-toggle {
+	display: flex;
+	align-items: center;
+	gap: $spacing-xl;
+	padding: $spacing-lg $spacing-2xl;
+	background: transparent;
+	border: 1px solid $border-color;
+	border-radius: 2rem;
+	cursor: pointer;
+	transition: all 0.3s ease;
+
+	&:hover {
+		background: $bg-light;
+		border-color: $primary-color;
+	}
+
+	.user-avatar {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid $border-color;
+		background: $bg-lighter;
+	}
+
+	.user-name {
+		font-weight: 500;
+		color: $text-primary;
+		max-width: 150px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+
+		@media (max-width: 1024px) {
+			display: none;
+		}
+	}
+
+	i.bi-chevron-down {
+		font-size: $font-sm;
+		color: $text-secondary;
+		transition: transform 0.3s ease;
+	}
+
+	&:hover i.bi-chevron-down {
+		color: $primary-color;
+	}
+}
+
+.user-dropdown-menu {
+	position: absolute;
+	top: calc(100% + $spacing-lg);
+	right: 0;
+	background: $bg-white;
+	border: 1px solid $border-color;
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	min-width: 200px;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-10px);
+	transition: all 0.3s ease;
+	z-index: 1000;
+
+	&.active {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		gap: $spacing-xl;
+		padding: $spacing-2xl $spacing-2xl;
+		color: $text-primary;
+		text-decoration: none;
+		border: none;
+		background: transparent;
+		width: 100%;
+		text-align: left;
+		cursor: pointer;
+		font-size: $font-md;
+		transition: background 0.2s ease;
+
+		i {
+			font-size: 1.1rem;
+			color: $text-secondary;
+		}
+
+		&:hover {
+			background: $bg-light;
+
+			i {
+				color: $primary-color;
+			}
+		}
+
+		&:first-child {
+			border-top-left-radius: 0.5rem;
+			border-top-right-radius: 0.5rem;
+		}
+
+		&:last-child {
+			border-bottom-left-radius: 0.5rem;
+			border-bottom-right-radius: 0.5rem;
 		}
 	}
 }

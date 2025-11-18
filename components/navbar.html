@@ -23,3 +23,30 @@
         </div>
     </div>
 </nav>
+
+<!-- Templates -->
+<template id="userAuthenticatedTemplate">
+    <div class="user-dropdown">
+        <button class="user-dropdown-toggle" data-dropdown-toggle>
+            <img class="user-avatar" data-user-avatar alt="Foto de perfil">
+            <span class="user-name" data-user-name></span>
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="user-dropdown-menu" data-dropdown-menu>
+            <a href="#" class="dropdown-item">
+                <i class="bi bi-person"></i> Perfil
+            </a>
+            <button class="dropdown-item" data-logout-btn>
+                <i class="bi bi-box-arrow-right"></i> Sair
+            </button>
+        </div>
+    </div>
+</template>
+
+<template id="userGuestTemplate">
+    <div class="user-dropdown">
+        <a href="login.html" class="btn-login">
+            <i class="bi bi-box-arrow-in-right"></i> Entrar
+        </a>
+    </div>
+</template>
