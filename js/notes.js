@@ -112,3 +112,10 @@ function clearNotes() {
 		}
 	}
 }
+
+/**
+ * Inicialização quando a página carregar
+ */
+document.addEventListener('DOMContentLoaded', function() {
+	initNotesEditor();
+});
