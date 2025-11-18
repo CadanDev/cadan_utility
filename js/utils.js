@@ -9,8 +9,9 @@ let notificationPermissionRequested = false;
  */
 function playSound() {
 	if (!audio) {
-		audio = new Audio('https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg');
-		audio.volume = 0.8; // Volume mais alto (0.0 a 1.0)
+		// Som mais suave e agradável
+		audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+		audio.volume = 0.6; // Volume moderado (0.0 a 1.0)
 		audio.loop = false;
 	}
 	audio.currentTime = 0;

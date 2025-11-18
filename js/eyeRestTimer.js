@@ -18,10 +18,13 @@ function start20MinTimer() {
 		localStorage.setItem('eyeRestTimer', JSON.stringify(timerData));
 	}
 
+	// Atualiza estado dos botões
+	updateButtonStates('running');
+
 	const progressBar = document.getElementById('progressBar');
 	progressBar.classList.remove('bg-success');
 	progressBar.classList.add('bg-primary');
-	updateProgress(20 * 60 * 1000, progressBar, startTime);
+	updateProgressWithTimer(20 * 60 * 1000, progressBar, startTime);
 
 	timer20min = setTimeout(() => {
 		if (typeof offlineStorage !== 'undefined') {
@@ -61,6 +64,10 @@ function start20SecTimer() {
 
 	document.getElementById('start20secBtn').style.display = 'none';
 	document.getElementById('status').innerHTML = '<i class="bi bi-eye-fill text-success me-2"></i>Olhe longe por 20 segundos!';
+	
+	// Atualiza estado dos botões
+	updateButtonStates('resting');
+	
 	sendNotification("🔍 Olhe longe!", "👀 Mantenha o olhar distante por 20 segundos para relaxar os olhos.", {
 		tag: 'eye-rest-20sec',
 		icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMyOGE3NDUiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxNiIgeT0iMTYiPgo8cGF0aCBkPSJNMTYgNUM5LjM3MzU3IDUgNCA5LjM3MzU3IDQgMTZDNCAyMi42MjY0IDkuMzczNTcgMjcgMTYgMjdDMjIuNjI2NCAyNyAyNyAyMi42MjY0IDI3IDE2QzI3IDkuMzczNTcgMjIuNjI2NCA1IDE2IDVaIiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSI0IiBmaWxsPSIjMjhhNzQ1Ii8+Cjwvc3ZnPgo8L3N2Zz4='
@@ -68,7 +75,7 @@ function start20SecTimer() {
 	const progressBar = document.getElementById('progressBar');
 	progressBar.classList.remove('bg-primary');
 	progressBar.classList.add('bg-success');
-	updateProgress(20000, progressBar, startTime);
+	updateProgressWithTimer(20000, progressBar, startTime);
 
 	timer20sec = setTimeout(() => {
 		localStorage.removeItem('eyeRestTimer');
@@ -101,8 +108,15 @@ function pauseTimer() {
 		clearTimeout(timer20sec);
 		timer20sec = null;
 	}
+	if (progressInterval) {
+		clearInterval(progressInterval);
+		progressInterval = null;
+	}
 	localStorage.removeItem('eyeRestTimer');
 	document.getElementById('status').innerHTML = '<i class="bi bi-pause-circle text-warning me-2"></i>Timer pausado';
+	
+	// Atualiza estado visual dos botões
+	updateButtonStates('paused');
 }
 
 /**
@@ -115,7 +129,12 @@ function stopTimer() {
 		progressBar.style.width = '0%';
 		progressBar.textContent = '';
 	}
+	const timerText = document.getElementById('timerText');
+	if (timerText) {
+		timerText.textContent = '20:00';
+	}
 	document.getElementById('status').innerHTML = '';
+	updateButtonStates('stopped');
 }
 
 /**
@@ -171,7 +190,7 @@ function restoreTimerState() {
 		if (timer.type === '20min') {
 			progressBar.classList.remove('bg-success');
 			progressBar.classList.add('bg-primary');
-			updateProgress(timer.duration, progressBar, timer.startTime);
+			updateProgressWithTimer(timer.duration, progressBar, timer.startTime);
 
 			timer20min = setTimeout(() => {
 				if (typeof offlineStorage !== 'undefined') {
@@ -197,7 +216,7 @@ function restoreTimerState() {
 			document.getElementById('status').innerHTML = '<i class="bi bi-eye-fill text-success me-2"></i>Olhe longe por 20 segundos!';
 			progressBar.classList.remove('bg-primary');
 			progressBar.classList.add('bg-success');
-			updateProgress(timer.duration, progressBar, timer.startTime);
+			updateProgressWithTimer(timer.duration, progressBar, timer.startTime);
 
 			timer20sec = setTimeout(() => {
 				if (typeof offlineStorage !== 'undefined') {
@@ -214,5 +233,96 @@ function restoreTimerState() {
 				start20MinTimer();
 			}, remaining);
 		}
+	}
+}
+
+/**
+ * Atualiza a barra de progresso com contador de tempo
+ * @param {number} duration - Duração total em milissegundos
+ * @param {HTMLElement} progressBar - Elemento da barra de progresso
+ * @param {number} startTime - Tempo de início
+ */
+function updateProgressWithTimer(duration, progressBar, startTime) {
+	// Limpa intervalo anterior se existir
+	if (typeof progressInterval !== 'undefined' && progressInterval) {
+		clearInterval(progressInterval);
+	}
+	
+	const timerText = document.getElementById('timerText');
+	
+	function updateDisplay() {
+		const elapsed = Date.now() - startTime;
+		const remaining = Math.max(0, duration - elapsed);
+		const percent = Math.min((elapsed / duration) * 100, 100);
+		
+		// Atualiza barra de progresso
+		progressBar.style.width = percent + "%";
+		
+		// Atualiza texto do timer
+		const minutes = Math.floor(remaining / 60000);
+		const seconds = Math.floor((remaining % 60000) / 1000);
+		if (timerText) {
+			timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+		}
+		
+		if (percent >= 100) {
+			clearInterval(progressInterval);
+		}
+	}
+	
+	// Atualiza imediatamente
+	updateDisplay();
+	
+	// Atualiza a cada segundo
+	progressInterval = setInterval(updateDisplay, 1000);
+}
+
+/**
+ * Atualiza o estado visual dos botões
+ * @param {string} state - Estado atual: 'running', 'paused', 'stopped', 'resting'
+ */
+function updateButtonStates(state) {
+	const pauseBtn = document.getElementById('pauseBtn');
+	const stopBtn = document.getElementById('stopBtn');
+	const start20secBtn = document.getElementById('start20secBtn');
+	
+	// Remove todas as classes de estado
+	pauseBtn.classList.remove('btn-warning', 'btn-secondary', 'btn-outline-warning');
+	stopBtn.classList.remove('btn-danger', 'btn-outline-danger');
+	
+	switch(state) {
+		case 'running':
+			pauseBtn.classList.add('btn-warning');
+			pauseBtn.innerHTML = '<i class="bi bi-pause-circle"></i> Pausar';
+			pauseBtn.disabled = false;
+			stopBtn.classList.add('btn-danger');
+			stopBtn.disabled = false;
+			start20secBtn.style.display = 'none';
+			break;
+			
+		case 'paused':
+			pauseBtn.classList.add('btn-secondary');
+			pauseBtn.innerHTML = '<i class="bi bi-pause-circle-fill"></i> Pausado';
+			pauseBtn.disabled = true;
+			stopBtn.classList.add('btn-outline-danger');
+			stopBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Reiniciar';
+			stopBtn.disabled = false;
+			break;
+			
+		case 'stopped':
+			pauseBtn.classList.add('btn-outline-warning');
+			pauseBtn.disabled = true;
+			stopBtn.classList.add('btn-outline-danger');
+			stopBtn.disabled = true;
+			break;
+			
+		case 'resting':
+			pauseBtn.classList.add('btn-warning');
+			pauseBtn.innerHTML = '<i class="bi bi-pause-circle"></i> Pausar';
+			pauseBtn.disabled = false;
+			stopBtn.classList.add('btn-danger');
+			stopBtn.disabled = false;
+			start20secBtn.style.display = 'none';
+			break;
 	}
 }
