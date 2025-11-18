@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Sistema de Lembretes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <script src="js/navbar.js"></script>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="bi bi-gear"></i> Configurações</h1>
+            <p>Ajuste preferências salvas no seu navegador.</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="bi bi-volume-up"></i> Voz (TTS)</h2>
+                </div>
+                <div class="card-body">
+                    <form id="settingsForm" class="vstack gap-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="ttsEnabled">
+                            <label class="form-check-label" for="ttsEnabled">
+                                Habilitar leitura por voz (TTS)
+                            </label>
+                            <div class="form-text">
+                                Requer um clique de interação para iniciar áudio em alguns navegadores.
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Salvar alterações
+                            </button>
+                            <button type="button" id="testTTS" class="btn btn-outline-secondary ms-2">
+                                <i class="bi bi-megaphone"></i> Testar voz
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

@@ -4,6 +4,70 @@ let progressInterval = null;
 let continuousMedicineAudio = null;
 let notificationPermissionRequested = false;
 
+// ======= TTS (Web Speech API) =======
+let ttsVoices = [];
+const SETTINGS_STORAGE_KEY = 'appSettings';
+
+function loadTTSVoices() {
+	try {
+		ttsVoices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+	} catch (e) {
+		ttsVoices = [];
+	}
+}
+
+if ('speechSynthesis' in window) {
+	try {
+		speechSynthesis.onvoiceschanged = loadTTSVoices;
+		loadTTSVoices();
+	} catch (e) {
+		// ignora
+	}
+}
+
+function speak(text, { lang = 'pt-BR', rate = 1, pitch = 1, volume = 1 } = {}) {
+	if (!('speechSynthesis' in window)) return;
+	const settings = getAppSettings();
+	if (!settings.ttsEnabled) return;
+	try {
+		const u = new SpeechSynthesisUtterance(text);
+		u.lang = lang; u.rate = rate; u.pitch = pitch; u.volume = volume;
+		const voice = ttsVoices.find(v => (v.lang || '').startsWith(lang));
+		if (voice) u.voice = voice;
+		speechSynthesis.cancel();
+		speechSynthesis.speak(u);
+	} catch (e) {
+		console.warn('Falha no TTS:', e);
+	}
+}
+
+// ======= App Settings (localStorage) =======
+function getDefaultSettings() {
+	return { ttsEnabled: true };
+}
+
+function getAppSettings() {
+	try {
+		const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+		if (!raw) return getDefaultSettings();
+		const parsed = JSON.parse(raw);
+		return { ...getDefaultSettings(), ...parsed };
+	} catch (e) {
+		return getDefaultSettings();
+	}
+}
+
+function saveAppSettings(settings) {
+	try {
+		const merged = { ...getDefaultSettings(), ...(settings || {}) };
+		localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(merged));
+		return merged;
+	} catch (e) {
+		console.error('Erro ao salvar configurações:', e);
+		return settings;
+	}
+}
+
 /**
  * Reproduz um som de alerta
  */

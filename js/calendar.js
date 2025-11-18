@@ -138,7 +138,8 @@ function saveCalendarEvents() {
  */
 function renderCalendar() {
 	const calendar = document.getElementById('calendar');
-	const monthYear = document.getElementById('monthYear');
+	// Corrige ID do elemento conforme HTML (currentMonthYear)
+	const monthYear = document.getElementById('currentMonthYear');
 
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
@@ -293,8 +294,8 @@ function openAddEventModal(preSelectedDate = null) {
 	const dateToSet = preSelectedDate || currentFilter || new Date().toISOString().split('T')[0];
 	document.getElementById('eventDate').value = dateToSet;
 
-	// Mostra o modal
-	const bootstrapModal = new bootstrap.Modal(modal);
+	// Mostra o modal (Bootstrap 5)
+	const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
 	bootstrapModal.show();
 }
 
@@ -559,3 +560,27 @@ function setupEventNotifications() {
 		}
 	});
 }
+
+// Fecha modal manualmente (caso necessário)
+function closeEventModal() {
+	const modalEl = document.getElementById('eventModal');
+	const modal = bootstrap.Modal.getInstance(modalEl);
+	if (modal) {
+		modal.hide();
+	}
+}
+
+// Inicialização quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+	// Inicializa calendário
+	initializeCalendar();
+
+	// Handler de submit do formulário
+	const form = document.getElementById('eventForm');
+	if (form) {
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			addEvent();
+		});
+	}
+});

@@ -33,6 +33,7 @@ function start20MinTimer() {
 			localStorage.removeItem('eyeRestTimer');
 		}
 		playSound();
+		speak('Hora de olhar longe por vinte segundos.');
 		sendNotification("👁️ Hora de olhar longe!", "⏰ Olhe para longe por 20 segundos para descansar os olhos.", {
 			requireInteraction: true,
 			icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMwMDc4ZDQiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxNiIgeT0iMTYiPgo8cGF0aCBkPSJNMTYgNUM5LjM3MzU3IDUgNCA5LjM3MzU3IDQgMTZDNCAyMi42MjY0IDkuMzczNTcgMjcgMTYgMjdDMjIuNjI2NCAyNyAyNyAyMi42MjY0IDI3IDE2QzI3IDkuMzczNTcgMjIuNjI2NCA1IDE2IDVaIiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSI0IiBmaWxsPSIjMDA3OGQ0Ii8+Cjwvc3ZnPgo8L3N2Zz4=',
@@ -67,6 +68,8 @@ function start20SecTimer() {
 	
 	// Atualiza estado dos botões
 	updateButtonStates('resting');
+	// TTS imediato para orientação
+	speak('Olhe longe por vinte segundos.');
 	
 	sendNotification("🔍 Olhe longe!", "👀 Mantenha o olhar distante por 20 segundos para relaxar os olhos.", {
 		tag: 'eye-rest-20sec',
@@ -80,6 +83,7 @@ function start20SecTimer() {
 	timer20sec = setTimeout(() => {
 		localStorage.removeItem('eyeRestTimer');
 		playSound();
+		speak('Pode voltar ao trabalho. Próximo lembrete em vinte minutos.');
 		sendNotification("✅ Pode voltar!", "💻 Você pode voltar ao trabalho. Próximo lembrete em 20 minutos.", {
 			tag: 'eye-rest-complete',
 			icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMxOThlNTYiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxNiIgeT0iMTYiPgo8cGF0aCBkPSJNMjIgMTBMMTMgMTlMOCAxNCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cjwvc3ZnPg=='
@@ -180,6 +184,7 @@ function restoreTimerState() {
 			// Deveria mostrar o botão de 20 segundos
 			document.getElementById('start20secBtn').style.display = 'inline-block';
 			playSound();
+			speak('Hora de olhar longe por vinte segundos.');
 			sendNotification("👁️ Hora de olhar longe!", "⏰ Olhe para longe por 20 segundos para descansar os olhos.", {
 				requireInteraction: true,
 				tag: 'eye-rest-timer-restore',
@@ -209,6 +214,7 @@ function restoreTimerState() {
 					localStorage.removeItem('eyeRestTimer');
 				}
 				playSound();
+				speak('Hora de olhar longe por vinte segundos.');
 				sendNotification("👁️ Hora de olhar longe!", "⏰ Olhe para longe por 20 segundos para descansar os olhos.", {
 					requireInteraction: true,
 					tag: 'eye-rest-timer-continued',
@@ -235,6 +241,7 @@ function restoreTimerState() {
 					localStorage.removeItem('eyeRestTimer');
 				}
 				playSound();
+				speak('Pode voltar ao trabalho. Próximo lembrete em vinte minutos.');
 				sendNotification("✅ Pode voltar!", "💻 Você pode voltar ao trabalho. Próximo lembrete em 20 minutos.", {
 					tag: 'eye-rest-complete-continued',
 					icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiMxOThlNTYiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxNiIgeT0iMTYiPgo8cGF0aCBkPSJNMjIgMTBMMTMgMTlMOCAxNCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cjwvc3ZnPg=='
