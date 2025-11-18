@@ -141,6 +141,12 @@ function renderCalendar() {
 	// Corrige ID do elemento conforme HTML (currentMonthYear)
 	const monthYear = document.getElementById('currentMonthYear');
 
+	// Verificar se os elementos existem
+	if (!calendar || !monthYear) {
+		console.error('Elementos do calendário não encontrados');
+		return;
+	}
+
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
 

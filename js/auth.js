@@ -47,8 +47,11 @@ class AuthManager {
 
     // Mostrar área principal (quando logado)
     showMainContent() {
-        document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'flex';
+        const loginArea = document.getElementById('loginArea');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (loginArea) loginArea.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'flex';
     }
 
     // Mostrar área de login (quando não logado)
@@ -57,8 +60,8 @@ class AuthManager {
         const mainContent = document.getElementById('mainContent');
         
         // Adicionar opção de modo offline
-        loginArea.style.display = 'block';
-        mainContent.style.display = 'none';
+        if (loginArea) loginArea.style.display = 'block';
+        if (mainContent) mainContent.style.display = 'none';
         
         // Adicionar botão de modo offline se não existir
         if (!document.getElementById('offlineModeBtn')) {
